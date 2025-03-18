@@ -15,12 +15,12 @@ public class HistoricoVendaService {
     private final HistoricoVendaRepository historicoVendaRepository;
     private final FrutaRepository frutaRepository;
 
-    public HistoricoVendaService(HistoricoVendaRepository historicoVendaRepository, com.thiago.fruitmanagementsystem.Repository. FrutaRepository frutaRepository) {
+    public HistoricoVendaService(HistoricoVendaRepository historicoVendaRepository, com.thiago.fruitmanagementsystem.Repository.FrutaRepository frutaRepository) {
         this.historicoVendaRepository = historicoVendaRepository;
         this.frutaRepository = frutaRepository;
     }
 
-   public List<HistoricoResponseDTO> findAllHistoricos() {
+    public List<HistoricoResponseDTO> findAllHistoricos() {
         List<HistoricoVendaFrutas> historicoVendaFrutas = historicoVendaRepository.findAllHstoricos();
         List<HistoricoResponseDTO> historicoResponseDTOS = new ArrayList<>();
         for (HistoricoVendaFrutas historicoVendaFruta : historicoVendaFrutas) {
@@ -36,12 +36,12 @@ public class HistoricoVendaService {
         return historicoResponseDTOS;
     }
 
-    public void saveHistoricoVendaWithoutDiscount(List<HistoricoVendaRequestDto> dtos) {
+    public void saveHistoricoVendaWithDiscount(List<HistoricoVendaRequestDto> dtos) {
         for (HistoricoVendaRequestDto dto : dtos) {
             HistoricoVendas historico = createHistoricoVendas(dto);
-            historicoVendaRepository.save(historico);
 
-            List<HistoricoVendaFrutas> frutasVendidas = processFrutasVendidas(dto, historico);
+
+            List<HistoricoVendaFrutas> frutasVendidas = processFruitsSales(dto, historico);
             historico.setFrutasVendidas(frutasVendidas);
 
             historicoVendaRepository.save(historico);
@@ -55,13 +55,17 @@ public class HistoricoVendaService {
         return historico;
     }
 
-    private List<HistoricoVendaFrutas> processFrutasVendidas(HistoricoVendaRequestDto dto, HistoricoVendas historico) {
+    private List<HistoricoVendaFrutas> processFruitsSales(HistoricoVendaRequestDto dto, HistoricoVendas historico) {
         List<HistoricoVendaFrutas> frutasVendidas = new ArrayList<>();
         Double totalVenda = 0.0;
 
         Fruta fruta = frutaRepository.findById(Long.valueOf(dto.frutaID()))
                 .orElseThrow(() -> new RuntimeException("Fruta não encontrada"));
-        totalVenda += (float) fruta.getValorVenda() * dto.qtdEscolhida();
+        totalVenda += fruta.getValorVenda() * dto.qtdEscolhida();
+
+        if (dto.discount() != 0) {
+            totalVenda -= (totalVenda * dto.discount());
+        }
 
         if (dto.qtdEscolhida() > fruta.getQtdDisponivel()) {
             throw new RuntimeException("Quantidade de fruta Escolhida Maior Do que Quantidade Disponivel");
@@ -77,19 +81,5 @@ public class HistoricoVendaService {
 
         historico.setValorTotal(totalVenda);
         return frutasVendidas;
-    }
-
-    private Double realizarVenda(List<HistoricoVendaRequestDto> dtos) {
-        Double totalVenda = 0.0;
-        for (HistoricoVendaRequestDto dto : dtos) {
-            Fruta fruta = frutaRepository.findById(Long.valueOf(dto.frutaID())).get();
-            totalVenda += (fruta.getValorVenda() * dto.qtdEscolhida());
-            if (dto.qtdEscolhida() > fruta.getQtdDisponivel()) {
-                throw new RuntimeException("Quantidade de fruta Escolhida Maior Do que Quantidade Disponivel");
-            }
-            fruta.setQtdDisponivel(fruta.getQtdDisponivel() - dto.qtdEscolhida());
-            frutaRepository.save(fruta);
-        }
-        return totalVenda;
     }
 }

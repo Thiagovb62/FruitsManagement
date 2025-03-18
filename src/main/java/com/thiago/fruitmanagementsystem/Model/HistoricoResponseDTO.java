@@ -9,10 +9,10 @@ public record HistoricoResponseDTO(
         LocalDateTime dataVenda,
         Double valorTotal,
         int qtdEscolhida,
-        List<Fruta> frutasVendidas
+        List<Fruta> frutaVendida
 ) {
-    public HistoricoResponseDTO(UUID id, LocalDateTime dataVenda, Double valorTotal, int qtdEscolhida, Fruta frutasVendidas) {
-        this(id, dataVenda, valorTotal, qtdEscolhida, List.of(frutasVendidas));
+    public HistoricoResponseDTO(UUID id, LocalDateTime dataVenda, Double valorTotal, int qtdEscolhida, Fruta frutaVendida) {
+        this(id, dataVenda, valorTotal, qtdEscolhida, List.of(frutaVendida));
     }
 
 }

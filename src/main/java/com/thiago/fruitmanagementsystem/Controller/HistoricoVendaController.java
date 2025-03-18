@@ -26,6 +26,6 @@ public class HistoricoVendaController {
     @PostMapping("/add")
     @Transactional
     public void addHistoricoVenda(@RequestBody List<HistoricoVendaRequestDto> dtos) {
-        historicoVendaService.saveHistoricoVendaWithoutDiscount(dtos);
+        historicoVendaService.saveHistoricoVendaWithDiscount(dtos);
     }
 }
