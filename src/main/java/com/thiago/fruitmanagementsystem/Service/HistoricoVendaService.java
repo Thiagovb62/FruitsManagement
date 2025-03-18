@@ -36,26 +36,16 @@ public class HistoricoVendaService {
         return historicoResponseDTOS;
     }
 
-    public void saveHistoricoVendaWithDiscount(List<HistoricoVendaRequestDto> dtos) {
-        for (HistoricoVendaRequestDto dto : dtos) {
-            HistoricoVendas historico = createHistoricoVendas(dto);
 
 
-            List<HistoricoVendaFrutas> frutasVendidas = processFruitsSales(dto, historico);
-            historico.setFrutasVendidas(frutasVendidas);
-
-            historicoVendaRepository.save(historico);
-        }
-    }
-
-    private HistoricoVendas createHistoricoVendas(HistoricoVendaRequestDto dto) {
+   protected HistoricoVendas createHistoricoVendas(VendaRequestDTO dto) {
         HistoricoVendas historico = new HistoricoVendas();
         historico.setDataVenda(LocalDateTime.now());
         historico.setQtdEscolhida(dto.qtdEscolhida());
         return historico;
     }
 
-    private List<HistoricoVendaFrutas> processFruitsSales(HistoricoVendaRequestDto dto, HistoricoVendas historico) {
+    protected List<HistoricoVendaFrutas> processFruitsSales(VendaRequestDTO dto, HistoricoVendas historico) {
         List<HistoricoVendaFrutas> frutasVendidas = new ArrayList<>();
         Double totalVenda = 0.0;
 

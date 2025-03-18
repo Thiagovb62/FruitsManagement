@@ -1,5 +1,5 @@
 package com.thiago.fruitmanagementsystem.Model;
-public record HistoricoVendaRequestDto(
+public record VendaRequestDTO(
         Integer frutaID,
         float discount,
         int qtdEscolhida
