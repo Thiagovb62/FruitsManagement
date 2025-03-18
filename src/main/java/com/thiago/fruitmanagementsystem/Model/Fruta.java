@@ -4,7 +4,9 @@ import com.thiago.fruitmanagementsystem.Enums.ClassificacaoEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
@@ -30,4 +32,16 @@ public class Fruta {
 
     @NotNull(message = "O valor de venda da fruta é obrigatório")
     private double valorVenda;
+
+
+    public Fruta() {
+    }
+
+    public Fruta(String nome, ClassificacaoEnum classificacao, Boolean fresca, int qtdDisponivel, double valorVenda) {
+        this.nome = nome;
+        this.classificacao = classificacao;
+        this.fresca = fresca;
+        this.qtdDisponivel = qtdDisponivel;
+        this.valorVenda = valorVenda;
+    }
 }
