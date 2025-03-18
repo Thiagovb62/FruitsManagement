@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface FrutaRepository extends JpaRepository<Fruta, Long> {
 
+    Optional<Fruta> findByNomeAndClassificacao(String nome, ClassificacaoEnum classificacao);
+
     List<Fruta> findAllByQtdDisponivelNotNull();
 
     @Query("SELECT f FROM Fruta f WHERE f.classificacao = :classificacao and f.fresca = :fresca order by f.valorVenda asc ")

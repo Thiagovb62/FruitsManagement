@@ -68,11 +68,10 @@ public class FrutaService {
     public void saveFruit(FrutaRequestDTO dto){
 
         Fruta fruta = new Fruta(dto);
-        Optional<Fruta> frutaExists = frutaRepository.findByNome(fruta.getNome());
+        Optional<Fruta> frutaExists = frutaRepository.findByNomeAndClassificacao(fruta.getNome(), fruta.getClassificacao());
         if (frutaExists.isPresent()){
             throw new IllegalArgumentException("Fruta já cadastrada");
         }
-
         frutaRepository.save(fruta);
     }
 }

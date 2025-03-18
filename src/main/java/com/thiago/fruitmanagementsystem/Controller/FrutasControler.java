@@ -71,7 +71,7 @@ public class FrutasControler {
 
     @PostMapping("/save")
     @Secured("ADMIN")
-    public ResponseEntity saveFruit(@RequestBody FrutaRequestDTO dto){
+    public ResponseEntity saveFruit(@RequestBody FrutaRequestDTO dto) throws Exception {
         frutaService.saveFruit(dto);
         return ResponseEntity.ok().build();
     }
