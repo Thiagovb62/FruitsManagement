@@ -1,5 +1,6 @@
 package com.thiago.fruitmanagementsystem.Repository;
 
+import com.thiago.fruitmanagementsystem.Enums.ClassificacaoEnum;
 import com.thiago.fruitmanagementsystem.Model.Fruta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +12,14 @@ public interface FrutaRepository extends JpaRepository<Fruta, Long> {
 
     List<Fruta> findAllByQtdDisponivelNotNull();
 
-    List<Fruta> findAllByClassificacao(String classificacao);
+    @Query("SELECT f FROM Fruta f WHERE f.classificacao = :classificacao and f.fresca = :fresca order by f.valorVenda asc ")
+    List<Fruta> findAllByClassificacaoAndFrescaAndOrderByValorVendaIdAsc(ClassificacaoEnum classificacao, Boolean fresca);
 
-    List<Fruta> findAllByFresca(Boolean fresca);
+    @Query("SELECT f FROM Fruta f WHERE f.classificacao = :classificacao order by f.nome asc ")
+    List<Fruta> findAllByClassificacaoAndOrderByNome(ClassificacaoEnum classificacao);
+
+    @Query("SELECT f FROM Fruta f WHERE f.fresca = :fresca order by f.nome asc ")
+    List<Fruta> findAllByFrescaAndOrderByNome(Boolean fresca);
 
     Optional<Fruta> findByNome(String nome);
 
