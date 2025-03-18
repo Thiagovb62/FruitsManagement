@@ -1,7 +1,7 @@
 package com.thiago.fruitmanagementsystem.Controller;
 
 import com.thiago.fruitmanagementsystem.Model.Fruta;
-import com.thiago.fruitmanagementsystem.Model.FrutaFindaBysDTO;
+import com.thiago.fruitmanagementsystem.Model.FrutasFindBysDTO;
 import com.thiago.fruitmanagementsystem.Model.FrutaRequestDTO;
 import com.thiago.fruitmanagementsystem.Service.FrutaService;
 import org.springframework.http.ResponseEntity;
@@ -10,19 +10,19 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/fruta")
+@RequestMapping("/frutas")
 @EnableMethodSecurity(securedEnabled = true)
-public class FrutaControler {
+public class FrutasControler {
 
     private final FrutaService frutaService;
 
-    public FrutaControler(FrutaService frutaService) {
+    public FrutasControler(FrutaService frutaService) {
         this.frutaService = frutaService;
     }
 
     @GetMapping("/findByName")
     @Secured("VENDEDOR")
-    public ResponseEntity findFruitByName(@RequestBody FrutaFindaBysDTO dto){
+    public ResponseEntity findFruitByName(@RequestBody FrutasFindBysDTO dto){
         Fruta fruta = frutaService.findFruitByName(dto);
         return ResponseEntity.ok(fruta);
     }
@@ -35,13 +35,13 @@ public class FrutaControler {
 
     @GetMapping("/getByClassification")
     @Secured("VENDEDOR")
-    public ResponseEntity getFruitsByClassification(@RequestBody FrutaFindaBysDTO dto){
+    public ResponseEntity getFruitsByClassification(@RequestBody FrutasFindBysDTO dto){
         return ResponseEntity.ok(frutaService.getFruitsByClassification(dto));
     }
 
     @GetMapping("/getByFreshness")
     @Secured("VENDEDOR")
-    public ResponseEntity getFruitsByFreshness(@RequestBody FrutaFindaBysDTO dto){
+    public ResponseEntity getFruitsByFreshness(@RequestBody FrutasFindBysDTO dto){
         return ResponseEntity.ok(frutaService.getFruitsByFreshness(dto));
     }
 
@@ -65,7 +65,7 @@ public class FrutaControler {
 
     @GetMapping("/getByParams")
     @Secured("VENDEDOR")
-    public ResponseEntity getFruitsByParams(@RequestBody FrutaFindaBysDTO dto){
+    public ResponseEntity getFruitsByParams(@RequestBody FrutasFindBysDTO dto){
         return ResponseEntity.ok(frutaService.findAllByClassificacaoOrFrescaAndOrderByValorVendaIdAsc(dto));
     }
 

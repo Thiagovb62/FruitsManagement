@@ -2,10 +2,9 @@ package com.thiago.fruitmanagementsystem.Service;
 
 import com.thiago.fruitmanagementsystem.Enums.ClassificacaoEnum;
 import com.thiago.fruitmanagementsystem.Model.Fruta;
-import com.thiago.fruitmanagementsystem.Model.FrutaFindaBysDTO;
+import com.thiago.fruitmanagementsystem.Model.FrutasFindBysDTO;
 import com.thiago.fruitmanagementsystem.Model.FrutaRequestDTO;
 import com.thiago.fruitmanagementsystem.Repository.FrutaRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class FrutaService {
         this.frutaRepository = frutaRepository;
     }
 
-    public Fruta findFruitByName(FrutaFindaBysDTO dto){
+    public Fruta findFruitByName(FrutasFindBysDTO dto){
         var name = dto.nome();
         return frutaRepository.findByNome(name).orElseThrow(() -> new NullPointerException("Fruta não encontrada"));
     }
@@ -29,7 +28,7 @@ public class FrutaService {
         return frutaRepository.findAll();
     }
 
-    public List<Fruta> findAllByClassificacaoOrFrescaAndOrderByValorVendaIdAsc(FrutaFindaBysDTO dto) {
+    public List<Fruta> findAllByClassificacaoOrFrescaAndOrderByValorVendaIdAsc(FrutasFindBysDTO dto) {
         List<Fruta> frutas = frutaRepository.findAllByClassificacaoAndFrescaAndOrderByValorVendaIdAsc(ClassificacaoEnum.fromValor(dto.classificacao()), dto.fresca());
         if (frutas.isEmpty()) {
             throw new NullPointerException("Nenhuma fruta encontrada com os parâmetros informados!");
@@ -37,7 +36,7 @@ public class FrutaService {
         return frutas;
     }
 
-    public List<Fruta> getFruitsByClassification(FrutaFindaBysDTO dto){
+    public List<Fruta> getFruitsByClassification(FrutasFindBysDTO dto){
         ClassificacaoEnum classificacao = ClassificacaoEnum.fromValor(dto.classificacao());
         List<Fruta> frutas = frutaRepository.findAllByClassificacaoAndOrderByNome(classificacao);
         if (frutas.isEmpty()){
@@ -46,7 +45,7 @@ public class FrutaService {
         return frutas;
     }
 
-    public List<Fruta> getFruitsByFreshness(FrutaFindaBysDTO dto){
+    public List<Fruta> getFruitsByFreshness(FrutasFindBysDTO dto){
         List<Fruta> frutas = frutaRepository.findAllByFrescaAndOrderByNome(dto.fresca());
         if (frutas.isEmpty()){
             throw new NullPointerException("Nenhuma fruta encontrada com a frescura " + dto.fresca() + "!");

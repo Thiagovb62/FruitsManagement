@@ -1,8 +1,6 @@
 package com.thiago.fruitmanagementsystem.Model;
 
-import jakarta.validation.constraints.NotBlank;
-
-public record FrutaFindaBysDTO(
+public record FrutasFindBysDTO(
 
         String nome,
 
