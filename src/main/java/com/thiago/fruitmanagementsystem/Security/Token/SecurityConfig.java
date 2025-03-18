@@ -1,24 +1,22 @@
-package com.thiago.fruitmanagementsystem.Security;
+package com.thiago.fruitmanagementsystem.Security.Token;
 
 import com.thiago.fruitmanagementsystem.Security.Filter.SecurityFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-    private final SecurityFilter securityFilter;
-
-    public SecurityConfig(SecurityFilter securityFilter) {
-        this.securityFilter = securityFilter;
-    }
+    @Autowired
+    private SecurityFilter securityFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,10 +25,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> {
                             auth
-                                    .requestMatchers("/historicoVenda/**").permitAll()
-                                    .requestMatchers("/frutas/**").permitAll();
+                                    .requestMatchers("/historicoVenda/**").authenticated()
+                                    .requestMatchers("/frutas/**").authenticated()
+                                    .requestMatchers("/user/login").permitAll()
+                                    .requestMatchers("/user/register").permitAll();
                         })
          .addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
         return http.build();
     }
+
 }
