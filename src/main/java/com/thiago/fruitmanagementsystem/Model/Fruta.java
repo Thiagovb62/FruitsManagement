@@ -4,11 +4,7 @@ import com.thiago.fruitmanagementsystem.Enums.ClassificacaoEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
 @Entity
 @Table(name = "frutas")
 public class Fruta {
@@ -17,20 +13,15 @@ public class Fruta {
     @Id
     private Long id;
 
-    @NotBlank(message = "O nome da fruta é obrigatório")
     private String nome;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "A classificação da fruta é obrigatória")
     private ClassificacaoEnum classificacao;
 
-    @NotNull(message = "A fruta é fresca?")
     private Boolean fresca;
 
-    @NotNull(message = "A quantidade disponível da fruta é obrigatória")
     private int qtdDisponivel;
 
-    @NotNull(message = "O valor de venda da fruta é obrigatório")
     private double valorVenda;
 
 
@@ -43,5 +34,66 @@ public class Fruta {
         this.fresca = fresca;
         this.qtdDisponivel = qtdDisponivel;
         this.valorVenda = valorVenda;
+    }
+
+    public Fruta(FrutaRequestDTO frutaRequestDTO) {
+        this.nome = frutaRequestDTO.nome();
+        this.classificacao = ClassificacaoEnum.fromValor(frutaRequestDTO.classificacao());
+        this.fresca = frutaRequestDTO.fresca();
+        this.qtdDisponivel = frutaRequestDTO.qtdDisponivel();
+        this.valorVenda = frutaRequestDTO.valorVenda();
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public ClassificacaoEnum getClassificacao() {
+        return classificacao;
+    }
+
+    public void setClassificacao(ClassificacaoEnum classificacao) {
+        this.classificacao = classificacao;
+    }
+
+    public Boolean getFresca() {
+        return fresca;
+    }
+
+    public void setFresca(Boolean fresca) {
+        this.fresca = fresca;
+    }
+
+
+    public int getQtdDisponivel() {
+        return qtdDisponivel;
+    }
+
+    public void setQtdDisponivel(int qtdDisponivel) {
+        this.qtdDisponivel = qtdDisponivel;
+    }
+
+    public double getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(double valorVenda) {
+        this.valorVenda = valorVenda;
+    }
+
+    @Override
+    public String toString() {
+        return "Fruta{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", classificacao=" + classificacao +
+                ", fresca=" + fresca +
+                ", qtdDisponivel=" + qtdDisponivel +
+                ", valorVenda=" + valorVenda +
+                '}';
     }
 }
