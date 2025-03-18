@@ -49,8 +49,7 @@ public class AuthenticationService {
          newUser.setRole(RoleEnum.ADMIN);
         else if(dto.email().equalsIgnoreCase("thiagovbfazendas@gmail.com"))
          newUser.setRole(RoleEnum.VENDEDOR);
-        else
-         newUser.setRole(RoleEnum.COMPRADOR);
+
 
         userRepository.save(newUser);
     }
