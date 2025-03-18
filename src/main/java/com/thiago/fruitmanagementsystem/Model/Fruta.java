@@ -2,8 +2,6 @@ package com.thiago.fruitmanagementsystem.Model;
 
 import com.thiago.fruitmanagementsystem.Enums.ClassificacaoEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "frutas")
@@ -42,6 +40,14 @@ public class Fruta {
         this.fresca = frutaRequestDTO.fresca();
         this.qtdDisponivel = frutaRequestDTO.qtdDisponivel();
         this.valorVenda = frutaRequestDTO.valorVenda();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
