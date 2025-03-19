@@ -2,6 +2,7 @@ package com.thiago.fruitmanagementsystem.Controller;
 import com.thiago.fruitmanagementsystem.Model.UserDTO;
 import com.thiago.fruitmanagementsystem.Repository.UserRepository;
 import com.thiago.fruitmanagementsystem.Service.AuthenticationService;
+import jakarta.validation.Valid;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +20,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void cadastrarUsuario(@RequestBody UserDTO dto) throws AuthenticationException {
+    public void cadastrarUsuario(@Valid @RequestBody UserDTO dto) throws AuthenticationException {
         authenticationService.CreateUser(dto);
     }
 
     @PostMapping("/login")
-    public String autenticarUsuario(@RequestBody UserDTO dto) throws AuthenticationException {
+    public String autenticarUsuario(@Valid @RequestBody UserDTO dto) throws AuthenticationException {
         return authenticationService.authenticate(dto);
     }
 }

@@ -5,6 +5,8 @@ import com.thiago.fruitmanagementsystem.Model.Fruta;
 import com.thiago.fruitmanagementsystem.Model.FrutasFindBysDTO;
 import com.thiago.fruitmanagementsystem.Model.FrutaRequestDTO;
 import com.thiago.fruitmanagementsystem.Repository.FrutaRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class FrutaService {
 
     public Fruta findFruitByName(FrutasFindBysDTO dto){
         var name = dto.nome();
-        return frutaRepository.findByNome(name).orElseThrow(() -> new NullPointerException("Fruta não encontrada"));
+        return frutaRepository.findByNome(name).orElseThrow(() -> new EntityNotFoundException("Fruta não encontrada"));
     }
 
     public List<Fruta> getAllFruits(){
@@ -31,7 +33,7 @@ public class FrutaService {
     public List<Fruta> findAllByClassificacaoOrFrescaAndOrderByValorVendaIdAsc(FrutasFindBysDTO dto) {
         List<Fruta> frutas = frutaRepository.findAllByClassificacaoAndFrescaAndOrderByValorVendaIdAsc(ClassificacaoEnum.fromValor(dto.classificacao()), dto.fresca());
         if (frutas.isEmpty()) {
-            throw new NullPointerException("Nenhuma fruta encontrada com os parâmetros informados!");
+            throw new EntityNotFoundException("Nenhuma fruta encontrada com os parâmetros informados!");
         }
         return frutas;
     }
@@ -40,7 +42,7 @@ public class FrutaService {
         ClassificacaoEnum classificacao = ClassificacaoEnum.fromValor(dto.classificacao());
         List<Fruta> frutas = frutaRepository.findAllByClassificacaoAndOrderByNome(classificacao);
         if (frutas.isEmpty()){
-            throw new NullPointerException("Nenhuma fruta encontrada com a classificação " + classificacao + "!");
+            throw new EntityNotFoundException("Nenhuma fruta encontrada com a classificação " + classificacao + "!");
         }
         return frutas;
     }
@@ -48,7 +50,7 @@ public class FrutaService {
     public List<Fruta> getFruitsByFreshness(FrutasFindBysDTO dto){
         List<Fruta> frutas = frutaRepository.findAllByFrescaAndOrderByNome(dto.fresca());
         if (frutas.isEmpty()){
-            throw new NullPointerException("Nenhuma fruta encontrada com a frescura " + dto.fresca() + "!");
+            throw new EntityNotFoundException("Nenhuma fruta encontrada com a frescura " + dto.fresca() + "!");
         }
         return frutas;
     }

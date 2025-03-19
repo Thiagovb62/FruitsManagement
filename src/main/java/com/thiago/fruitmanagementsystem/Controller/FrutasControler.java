@@ -4,6 +4,7 @@ import com.thiago.fruitmanagementsystem.Model.Fruta;
 import com.thiago.fruitmanagementsystem.Model.FrutasFindBysDTO;
 import com.thiago.fruitmanagementsystem.Model.FrutaRequestDTO;
 import com.thiago.fruitmanagementsystem.Service.FrutaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -71,7 +72,7 @@ public class FrutasControler {
 
     @PostMapping("/save")
     @Secured("ADMIN")
-    public ResponseEntity saveFruit(@RequestBody FrutaRequestDTO dto) throws Exception {
+    public ResponseEntity saveFruit(@Valid @RequestBody FrutaRequestDTO dto){
         frutaService.saveFruit(dto);
         return ResponseEntity.ok().build();
     }

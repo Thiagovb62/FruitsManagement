@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 
 @Component
@@ -32,12 +33,14 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         if (token != null) {
-            var subject = authenticationService.getSubject(token);
-            System.out.println(subject);
+            String subject = null;
+
+            subject = authenticationService.getSubject(token);
+
             var user = userRepository.findByEmailEqualsIgnoreCase(subject);
 
             if (user == null) {
-                throw new RuntimeException("User not found");
+                throw new AuthenticationException("Falha na autenticação");
             }
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
