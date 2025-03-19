@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/frutas")
 @EnableMethodSecurity(securedEnabled = true)
-public class FrutasControler {
+public class FrutasController {
 
     private final FrutaService frutaService;
 
-    public FrutasControler(FrutaService frutaService) {
+    public FrutasController(FrutaService frutaService) {
         this.frutaService = frutaService;
     }
 
