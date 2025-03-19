@@ -52,7 +52,7 @@ The system has two roles:
     - **Response:**
       ```json
       {
-        "token": "jwt-token"
+        "status: HttpStatus.OK"
       }
       ```
       
@@ -106,29 +106,31 @@ The system has two roles:
       ```
 
 - **Add a New Fruit**
-    - **URL:** `/frutas/add`
-    - **Method:** POST
-  - **Authorization:** `Bearer jwt-token`
-  - **Role:** `ADMIN`
-    - **Request Body:**
-      ```json
-      {
-        "nome": "Banana",
-        "classificacao": 2,
-        "valorVenda": 1.5,
-        "qtdDisponivel": 200,
-        "fresca": true
-      }
-      ```
-    - **Response:**
-      ```json
-      {
-        "status: HttpStatus.OK"
-      }
-      ```
-**Get a Fruit by Name**
-- **URL:** `/frutas/findByName
+- **URL:** `/frutas/add`
 - **Method:** POST
+- **Authorization:** `Bearer jwt-token`
+- **Role:** `ADMIN`
+- **Request Body:**
+  ```json
+  {
+    "nome": "Banana",
+    "classificacao": 2,
+    "valorVenda": 1.5,
+    "qtdDisponivel": 200,
+    "fresca": true
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "status: HttpStatus.OK"
+  }
+  ```
+**Get a Fruit by Name**
+- **URL:** /frutas/findByName
+- **Method:** POST
+- **Authorization:** `Bearer jwt-token`
+- **Role:** `VENDEDOR`
 - **Request Body:**
 ```json
 {
@@ -174,7 +176,7 @@ The system has two roles:
     "fresca": true
 }
 ```
-**And Others types of List with another params,see the FrutaContrller to see All !**
+**And Others types of List with another params,see the FrutaController to see All !**
 
 ### Venda
 - **Register a sale**
@@ -232,7 +234,7 @@ The system has two roles:
                 }
               ]
                 },
-        {
+           {
               "id": "93f6ed07-eb0a-44a6-92e8-833625b53582",
               "dataVenda": "2025-03-18T11:29:03.554046",
               "valorTotal": 2.5,
@@ -247,6 +249,7 @@ The system has two roles:
                 "valorVenda": 2.5
                 }
               ]
+          }
         ]
 ```
 
