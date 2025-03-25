@@ -23,7 +23,7 @@ public interface FrutaRepository extends JpaRepository<Fruta, Long> {
     @Query("SELECT f FROM Fruta f WHERE f.fresca = :fresca order by f.nome asc ")
     List<Fruta> findAllByFrescaAndOrderByNome(Boolean fresca);
 
-    Optional<Fruta> findByNome(String nome);
+    List<Fruta> findAllByNome(String nome);
 
     @Query("SELECT f FROM Fruta f order by f.valorVenda asc ")
     List<Fruta> findAllByValorVendaAsc();

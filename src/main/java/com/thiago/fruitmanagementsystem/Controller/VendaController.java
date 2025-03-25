@@ -26,7 +26,7 @@ public class VendaController {
     @PostMapping("/add")
     @Transactional
     @Secured("VENDEDOR")
-    public void executeSale(@RequestBody List<VendaRequestDTO> dtos) {
+    public void executeSale(@RequestBody VendaRequestDTO dtos) {
         vendasService.executeSalesWithDiscoutOrNot(dtos);
 
     }

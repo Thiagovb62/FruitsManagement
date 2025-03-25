@@ -21,9 +21,13 @@ public class FrutaService {
         this.frutaRepository = frutaRepository;
     }
 
-    public Fruta findFruitByName(FrutasFindBysDTO dto){
+    public List<Fruta> findFruitByName(FrutasFindBysDTO dto){
         var name = dto.nome();
-        return frutaRepository.findByNome(name).orElseThrow(() -> new EntityNotFoundException("Fruta não encontrada"));
+        List<Fruta> frutas = frutaRepository.findAllByNome(name);
+        if (frutas.isEmpty()){
+            throw new EntityNotFoundException("Nenhuma fruta encontrada com o nome " + name + "!");
+        }
+        return frutas;
     }
 
     public List<Fruta> getAllFruits(){

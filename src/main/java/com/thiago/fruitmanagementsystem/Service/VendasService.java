@@ -20,15 +20,15 @@ public class VendasService  {
         this.historicoVendaService = historicoVendaService;
     }
 
-    public void executeSalesWithDiscoutOrNot(List<VendaRequestDTO> dtos) {
-        for (VendaRequestDTO dto : dtos) {
+    public void executeSalesWithDiscoutOrNot(VendaRequestDTO dto) {
+
             HistoricoVendas historico = historicoVendaService.createHistoricoVendas(dto);
 
-
             List<HistoricoVendaFrutas> frutasVendidas = historicoVendaService.processFruitsSales(dto, historico);
+
             historico.setFrutasVendidas(frutasVendidas);
 
             historicoVendaRepository.save(historico);
         }
-    }
+
 }

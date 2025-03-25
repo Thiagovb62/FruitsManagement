@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface HistoricoVendaRepository extends JpaRepository<HistoricoVendas, Long> {
 
-    @Query("select hf from HistoricoVendas hv join HistoricoVendaFrutas hf on hv.id = hf.historicoVendas.id join Fruta f on hf.fruta.id = f.id")
+    @Query("select distinct hf from HistoricoVendas hv join HistoricoVendaFrutas hf on hv.id = hf.historicoVendas.id join Fruta f on hf.fruta.id = f.id")
     List<HistoricoVendaFrutas> findAllHstoricos();
 
 }

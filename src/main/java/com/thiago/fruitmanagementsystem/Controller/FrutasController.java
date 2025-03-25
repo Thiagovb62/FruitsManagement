@@ -24,8 +24,8 @@ public class FrutasController {
     @GetMapping("/findByName")
     @Secured("VENDEDOR")
     public ResponseEntity findFruitByName(@RequestBody FrutasFindBysDTO dto){
-        Fruta fruta = frutaService.findFruitByName(dto);
-        return ResponseEntity.ok(fruta);
+        var frutas = frutaService.findFruitByName(dto);
+        return ResponseEntity.ok(frutas);
     }
 
     @GetMapping("/getAll")

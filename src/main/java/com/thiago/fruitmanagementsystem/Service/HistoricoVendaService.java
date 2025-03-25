@@ -6,8 +6,7 @@ import com.thiago.fruitmanagementsystem.Repository.HistoricoVendaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class HistoricoVendaService {
@@ -21,55 +20,70 @@ public class HistoricoVendaService {
     }
 
     public List<HistoricoResponseDTO> findAllHistoricos() {
-        List<HistoricoVendaFrutas> historicoVendaFrutas = historicoVendaRepository.findAllHstoricos();
-        List<HistoricoResponseDTO> historicoResponseDTOS = new ArrayList<>();
-        for (HistoricoVendaFrutas historicoVendaFruta : historicoVendaFrutas) {
-            HistoricoResponseDTO historicoResponseDTO = new HistoricoResponseDTO(
-                    historicoVendaFruta.getHistoricoVendas().getId(),
-                    historicoVendaFruta.getHistoricoVendas().getDataVenda(),
-                    historicoVendaFruta.getHistoricoVendas().getValorTotal(),
-                    historicoVendaFruta.getHistoricoVendas().getQtdEscolhida(),
-                    historicoVendaFruta.getFruta()
-            );
-            historicoResponseDTOS.add(historicoResponseDTO);
+        List<HistoricoVendaFrutas> historicoVendas = historicoVendaRepository.findAllHstoricos();
+        Map<UUID, HistoricoResponseDTO> historicoMap = new HashMap<>();
+
+        for (HistoricoVendaFrutas historicoVenda : historicoVendas) {
+            UUID historicoId = historicoVenda.getHistoricoVendas().getId();
+            if (!historicoMap.containsKey(historicoId)) {
+                historicoMap.put(historicoId, new HistoricoResponseDTO(
+                        historicoId,
+                        historicoVenda.getHistoricoVendas().getValorTotal(),
+                        new ArrayList<>()
+                ));
+            }
+            HistoricoResponseDTO historicoResponseDTO = historicoMap.get(historicoId);
+            historicoResponseDTO.frutasVendidas().add(new FrutaVendaResponseDTO(
+                    historicoVenda.getHistoricoVendas().getQtdEscolhida(),
+                    historicoVenda.getHistoricoVendas().getDataVenda(),
+                    historicoVenda.getFruta()
+            ));
         }
-        return historicoResponseDTOS;
+        return new ArrayList<>(historicoMap.values());
     }
 
 
-
-   protected HistoricoVendas createHistoricoVendas(VendaRequestDTO dto) {
+    protected HistoricoVendas createHistoricoVendas(VendaRequestDTO dto) {
         HistoricoVendas historico = new HistoricoVendas();
         historico.setDataVenda(LocalDateTime.now());
-        historico.setQtdEscolhida(dto.qtdEscolhida());
+        for (FrutasVendasDTO dto2 : dto.frutasVendasDTO()) {
+            historico.setQtdEscolhida(dto2.qtdEscolhida());
+        }
         return historico;
     }
 
     protected List<HistoricoVendaFrutas> processFruitsSales(VendaRequestDTO dto, HistoricoVendas historico) {
-        List<HistoricoVendaFrutas> frutasVendidas = new ArrayList<>();
+        List<HistoricoVendaFrutas> historicoVendaFruta = new ArrayList<>();
+
+
         Double totalVenda = 0.0;
 
-        Fruta fruta = frutaRepository.findById(Long.valueOf(dto.frutaID()))
-                .orElseThrow(() -> new RuntimeException("Fruta não encontrada"));
-        totalVenda += fruta.getValorVenda() * dto.qtdEscolhida();
+        for (FrutasVendasDTO dto2 : dto.frutasVendasDTO()) {
+            Fruta fruta = frutaRepository.findById(Long.valueOf(dto2.frutaID())).orElseThrow(() -> new RuntimeException("Fruta não encontrada"));
+            Double valorVenda = fruta.getValorVenda() * dto2.qtdEscolhida();
 
-        if (dto.discount() != 0) {
-            totalVenda -= (totalVenda * dto.discount());
+            if (dto2.discount() != 0) {
+                valorVenda -= (valorVenda * dto2.discount());
+            }
+
+            if (dto2.qtdEscolhida() > fruta.getQtdDisponivel()) {
+                throw new RuntimeException("Quantidade de fruta Escolhida Maior Do que Quantidade Disponivel");
+            }
+
+            fruta.setQtdDisponivel(fruta.getQtdDisponivel() - dto2.qtdEscolhida());
+            frutaRepository.save(fruta);
+
+
+        HistoricoVendaFrutas historicoVendaFrutas = new HistoricoVendaFrutas();
+        historicoVendaFrutas.setHistoricoVendas(historico);
+        historicoVendaFrutas.setFruta(fruta);
+        historicoVendaFruta.add(historicoVendaFrutas);
+
+
+            totalVenda += valorVenda;
         }
-
-        if (dto.qtdEscolhida() > fruta.getQtdDisponivel()) {
-            throw new RuntimeException("Quantidade de fruta Escolhida Maior Do que Quantidade Disponivel");
-        }
-
-        fruta.setQtdDisponivel(fruta.getQtdDisponivel() - dto.qtdEscolhida());
-        frutaRepository.save(fruta);
-
-        HistoricoVendaFrutas historicoVendaFruta = new HistoricoVendaFrutas();
-        historicoVendaFruta.setHistoricoVendas(historico);
-        historicoVendaFruta.setFruta(fruta);
-        frutasVendidas.add(historicoVendaFruta);
 
         historico.setValorTotal(totalVenda);
-        return frutasVendidas;
+        return historicoVendaFruta;
     }
 }
