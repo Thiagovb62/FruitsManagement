@@ -43,6 +43,8 @@ public class HistoricoVendaService {
     }
 
 
+
+
     protected HistoricoVendas createHistoricoVendas(VendaRequestDTO dto) {
         HistoricoVendas historico = new HistoricoVendas();
         historico.setDataVenda(LocalDateTime.now());

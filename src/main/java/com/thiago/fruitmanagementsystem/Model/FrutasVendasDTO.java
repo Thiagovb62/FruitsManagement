@@ -1,8 +1,10 @@
 package com.thiago.fruitmanagementsystem.Model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+@Schema(name = "FrutasVendasDTO", description = "DTO para vendas de frutas")
 public record FrutasVendasDTO(
         @NotNull(message = "O ID da fruta é obrigatório")
         Integer frutaID,
