@@ -1,12 +1,14 @@
 package com.thiago.fruitmanagementsystem.Service;
 
 import com.thiago.fruitmanagementsystem.Enums.ClassificacaoEnum;
+import com.thiago.fruitmanagementsystem.Model.EmailModelDTO;
 import com.thiago.fruitmanagementsystem.Model.Fruta;
 import com.thiago.fruitmanagementsystem.Model.FrutasFindBysDTO;
 import com.thiago.fruitmanagementsystem.Model.FrutaRequestDTO;
 import com.thiago.fruitmanagementsystem.Repository.FrutaRepository;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,17 @@ public class FrutaService {
 
     private final FrutaRepository frutaRepository;
 
-    public FrutaService(FrutaRepository frutaRepository) {
+    private final EmailService emailService;
+
+    @Value("${spring.mail.username}")
+    private String emailFrom;
+
+    @Value("${spring.mail.usernameTo}")
+    private String emailTo;
+
+    public FrutaService(FrutaRepository frutaRepository, EmailService emailService) {
         this.frutaRepository = frutaRepository;
+        this.emailService = emailService;
     }
 
     public List<Fruta> findFruitByName(FrutasFindBysDTO dto){
@@ -71,13 +82,17 @@ public class FrutaService {
         return frutaRepository.findAllByValorVendaDesc();
     }
 
-    public void saveFruit(FrutaRequestDTO dto){
+    public void saveFruit(FrutaRequestDTO dto) throws MessagingException {
 
         Fruta fruta = new Fruta(dto);
         Optional<Fruta> frutaExists = frutaRepository.findByNomeAndClassificacao(fruta.getNome(), fruta.getClassificacao());
         if (frutaExists.isPresent()){
             throw new IllegalArgumentException("Fruta já cadastrada");
         }
+
+        String Message = "Fruta " + fruta.getNome() + " cadastrada com sucesso!";
+
+        emailService.sendEmail(new EmailModelDTO(emailFrom, emailTo, "SEASA",  Message));
         frutaRepository.save(fruta);
     }
 }

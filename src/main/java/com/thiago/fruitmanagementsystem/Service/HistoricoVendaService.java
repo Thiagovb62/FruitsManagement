@@ -1,10 +1,16 @@
 package com.thiago.fruitmanagementsystem.Service;
 
+import com.itextpdf.text.DocumentException;
 import com.thiago.fruitmanagementsystem.Model.*;
 import com.thiago.fruitmanagementsystem.Repository.FrutaRepository;
 import com.thiago.fruitmanagementsystem.Repository.HistoricoVendaRepository;
+import com.thiago.fruitmanagementsystem.Utils.PdfUtils;
+import jakarta.mail.MessagingException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -13,10 +19,18 @@ public class HistoricoVendaService {
 
     private final HistoricoVendaRepository historicoVendaRepository;
     private final FrutaRepository frutaRepository;
+    private final EmailService emailService;
 
-    public HistoricoVendaService(HistoricoVendaRepository historicoVendaRepository, com.thiago.fruitmanagementsystem.Repository.FrutaRepository frutaRepository) {
+    @Value("${spring.mail.username}")
+    private String emailFrom;
+
+    @Value("${spring.mail.usernameTo}")
+    private String emailTo;
+
+    public HistoricoVendaService(HistoricoVendaRepository historicoVendaRepository, com.thiago.fruitmanagementsystem.Repository.FrutaRepository frutaRepository, EmailService emailService) {
         this.historicoVendaRepository = historicoVendaRepository;
         this.frutaRepository = frutaRepository;
+        this.emailService = emailService;
     }
 
     public List<HistoricoResponseDTO> findAllHistoricos() {
@@ -40,6 +54,25 @@ public class HistoricoVendaService {
             ));
         }
         return new ArrayList<>(historicoMap.values());
+    }
+
+    public void generatePdf() throws DocumentException, IOException, MessagingException {
+        List<HistoricoResponseDTO> historicos = this.findAllHistoricos();
+        if (historicos.isEmpty()) {
+            System.out.println("No historical sales data found.");
+        } else {
+            System.out.println("Historical sales data found: " + historicos.size() + " records.");
+        }
+        byte[] pdfStream = PdfUtils.generatePdfStream(historicos);
+        if (pdfStream.length == 0) {
+            System.out.println("PDF generation failed or resulted in an empty PDF.");
+        } else {
+            System.out.println("PDF generated successfully with size: " + pdfStream.length + " bytes.");
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=historico_vendas.pdf");
+        PdfUtils.savePdfToFile(pdfStream, "historico_vendas.pdf");
+        emailService.sendEmailWithPdf(new EmailModelDTO(emailFrom,emailTo,"historico de vendas atualizado","Segue em anexo o historico de vendas desse mes"), pdfStream);
     }
 
 

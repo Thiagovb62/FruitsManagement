@@ -7,6 +7,7 @@ import com.thiago.fruitmanagementsystem.Utils.PdfUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,25 +58,11 @@ public class HistoricoVendaController {
                     @ApiResponse(responseCode = "401", description = "Sem autorização"),
                     @ApiResponse(responseCode = "404", description = "Histórico de vendas não encontrado")
             })
-    public ResponseEntity<byte[]> findAllHistoricosPdf() throws DocumentException, IOException {
-        List<HistoricoResponseDTO> historicos = historicoVendaService.findAllHistoricos();
-        if (historicos.isEmpty()) {
-            System.out.println("No historical sales data found.");
-        } else {
-            System.out.println("Historical sales data found: " + historicos.size() + " records.");
-        }
-        byte[] pdfStream = PdfUtils.generatePdfStream(historicos);
-        if (pdfStream.length == 0) {
-            System.out.println("PDF generation failed or resulted in an empty PDF.");
-        } else {
-            System.out.println("PDF generated successfully with size: " + pdfStream.length + " bytes.");
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=historico_vendas.pdf");
-        PdfUtils.savePdfToFile(pdfStream, "historico_vendas.pdf");
+    public ResponseEntity<String> findAllHistoricosPdf() throws DocumentException, IOException, MessagingException {
+        historicoVendaService.generatePdf();
         return ResponseEntity.ok()
-                .headers(headers)
+                .headers(new HttpHeaders())
                 .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfStream.clone());
+                .body("PDF gerado com sucesso");
     }
 }
