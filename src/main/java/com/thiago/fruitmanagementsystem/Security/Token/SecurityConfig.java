@@ -28,9 +28,10 @@ public class SecurityConfig {
                             auth
                                     .requestMatchers("/historicoVenda/**").authenticated()
                                     .requestMatchers("/frutas/**").authenticated()
-                                    .requestMatchers("/venda/**").authenticated()
+                                    .requestMatchers("/venda/**").permitAll()
                                     .requestMatchers("/user/login").permitAll()
                                     .requestMatchers("/user/register").permitAll()
+                                    .requestMatchers("/payment/**").permitAll()
                                     .requestMatchers(
                                                     "/v1/api/**",
                                                     "/v2/api-docs",

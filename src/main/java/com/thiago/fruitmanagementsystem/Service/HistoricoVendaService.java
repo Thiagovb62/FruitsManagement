@@ -121,4 +121,5 @@ public class HistoricoVendaService {
         historico.setValorTotal(totalVenda);
         return historicoVendaFruta;
     }
+
 }
